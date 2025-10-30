@@ -6,6 +6,10 @@ namespace Domain.Entities
         public string Name { get; private set; }
         public decimal Balance { get; private set; }
 
+#pragma warning disable CS8618 // For EFCore correct mapping
+        private BankAccount() { }
+#pragma warning restore CS0168 // Re-enable the warning
+
         public BankAccount(string name, decimal balance, Guid? id = null)
         {
             if (string.IsNullOrWhiteSpace(name))

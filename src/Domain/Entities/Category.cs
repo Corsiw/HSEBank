@@ -8,6 +8,9 @@ namespace Domain.Entities
         public MoneyType Type { get; private set; }
         public string Name { get; private set; }
 
+#pragma warning disable CS8618 // For EFCore correct mapping
+        private Category() { }
+#pragma warning restore CS0168 // Re-enable the warning
 
         public Category(MoneyType type, string name, Guid? id = null)
         {

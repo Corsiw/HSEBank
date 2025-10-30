@@ -12,6 +12,10 @@ namespace Domain.Entities
         public DateTime Date { get; private set; }
         public string? Description { get; private set; }
         
+#pragma warning disable CS8618 // For EFCore correct mapping
+        private Operation() { }
+#pragma warning restore CS0168 // Re-enable the warning
+        
         public Operation(MoneyType type, Guid bankAccountId, Guid categoryId, decimal amount, DateTime date, string? description = null, Guid? id = null)
         {
             if (amount <= 0)
