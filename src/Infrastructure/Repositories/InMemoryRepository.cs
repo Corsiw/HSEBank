@@ -25,6 +25,12 @@ namespace Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
+        public Task UpsertAsync(T item)
+        {
+            _items[idSelector(item)] = item;
+            return Task.CompletedTask;
+        }
+
         public Task DeleteAsync(Guid id)
         {
             _items.Remove(id);

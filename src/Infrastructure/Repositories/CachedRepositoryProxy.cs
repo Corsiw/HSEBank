@@ -27,6 +27,12 @@ namespace Infrastructure.Repositories
             _cache[idSelector(item)] = item;
         }
 
+        public async Task UpsertAsync(T item)
+        {
+            await inner.UpsertAsync(item);
+            _cache[idSelector(item)] = item;
+        }
+
         public async Task DeleteAsync(Guid id)
         {
             await inner.DeleteAsync(id);

@@ -20,7 +20,7 @@ namespace Infrastructure.Import
             // Апдейтим, если совпал ключ
             foreach (T item in range)
             {
-                await repository.UpdateAsync(item);
+                await repository.UpsertAsync(item);
             }
         }
     }

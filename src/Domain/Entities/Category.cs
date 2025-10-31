@@ -26,14 +26,6 @@ namespace Domain.Entities
             Type = type;
             Name = name;
         }
-        
-        [JsonConstructor]
-        public Category(Guid id, MoneyType type, string name)
-        {
-            Id = id;
-            Type = type;
-            Name = name;
-        }
 
         public void UpdateName(string newName)
         {

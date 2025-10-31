@@ -14,14 +14,6 @@ namespace Domain.Entities
         private BankAccount() { }
 #pragma warning restore CS0168 // Re-enable the warning
         
-        [JsonConstructor]
-        public BankAccount(Guid id, string name, decimal balance)
-        {
-            Id = id;
-            Name = name;
-            Balance = balance;
-        }
-
         public BankAccount(string name, decimal balance, Guid? id = null)
         {
             if (string.IsNullOrWhiteSpace(name))

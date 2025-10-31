@@ -28,6 +28,12 @@ namespace Infrastructure.Repositories
 
         public async Task UpdateAsync(T item)
         {
+            _dbSet.Update(item);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpsertAsync(T item)
+        {
             PropertyInfo prop = typeof(T).GetProperty("Id") ?? throw new InvalidOperationException("Entity must have Id property");
             Guid id = (Guid)prop.GetValue(item)!;
             T? existing = await GetAsync(id);
