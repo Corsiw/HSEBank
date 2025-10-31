@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Infrastructure.Data
 {
+    // For correct design time migrations 
     public class FinanceDbContextFactory : IDesignTimeDbContextFactory<FinanceDbContext>
     {
         public FinanceDbContext CreateDbContext(string[] args)

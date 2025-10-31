@@ -1,7 +1,10 @@
+using Domain.Attributes;
 using Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
+    [Imported]
     public class Category
     {
         public Guid Id { get; private set; }
@@ -20,6 +23,14 @@ namespace Domain.Entities
             }
 
             Id = id ?? Guid.NewGuid();
+            Type = type;
+            Name = name;
+        }
+        
+        [JsonConstructor]
+        public Category(Guid id, MoneyType type, string name)
+        {
+            Id = id;
             Type = type;
             Name = name;
         }

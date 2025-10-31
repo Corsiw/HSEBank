@@ -11,6 +11,16 @@ namespace Infrastructure.Repositories
             _cache[idSelector(item)] = item;
         }
 
+        public async Task AddRangeAsync(IEnumerable<T> items)
+        {
+            IEnumerable<T> enumerable = items.ToList();
+            await inner.AddRangeAsync(enumerable);
+            foreach (T item in enumerable)
+            {
+                _cache[idSelector(item)] = item;
+            }
+        }
+
         public async Task UpdateAsync(T item)
         {
             await inner.UpdateAsync(item);

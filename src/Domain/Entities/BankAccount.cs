@@ -1,5 +1,9 @@
+using Domain.Attributes;
+using System.Text.Json.Serialization;
+
 namespace Domain.Entities
 {
+    [Imported]
     public class BankAccount
     {
         public Guid Id { get; private set; }
@@ -9,6 +13,14 @@ namespace Domain.Entities
 #pragma warning disable CS8618 // For EFCore correct mapping
         private BankAccount() { }
 #pragma warning restore CS0168 // Re-enable the warning
+        
+        [JsonConstructor]
+        public BankAccount(Guid id, string name, decimal balance)
+        {
+            Id = id;
+            Name = name;
+            Balance = balance;
+        }
 
         public BankAccount(string name, decimal balance, Guid? id = null)
         {

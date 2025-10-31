@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Infrastructure.Repositories
 {
@@ -19,9 +20,26 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddRangeAsync(IEnumerable<T> items)
+        {
+            await _dbSet.AddRangeAsync(items);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task UpdateAsync(T item)
         {
-            _dbSet.Update(item);
+            PropertyInfo prop = typeof(T).GetProperty("Id") ?? throw new InvalidOperationException("Entity must have Id property");
+            Guid id = (Guid)prop.GetValue(item)!;
+            T? existing = await GetAsync(id);
+            if (existing == null)
+            {
+                await AddAsync(item);
+            }
+            else
+            {
+                _context.Entry(existing).CurrentValues.SetValues(item);
+            }
+
             await _context.SaveChangesAsync();
         }
 

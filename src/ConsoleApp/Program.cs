@@ -1,12 +1,15 @@
 ﻿using Application.Interfaces;
 using Application.Services;
 using ConsoleApp.Menus;
+using Domain.Attributes;
 using Domain.Entities;
 using Domain.Factories;
 using Infrastructure.Data;
+using Infrastructure.Import;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace ConsoleApp
 {
@@ -46,6 +49,41 @@ namespace ConsoleApp
                 EfRepository<Operation> efRepo = new EfRepository<Operation>(dbContext);
                 return new CachedRepositoryProxy<Operation>(efRepo, o => o.Id);
             });
+            
+            // Importers
+            IEnumerable<Type> domainTypes = Assembly.GetAssembly(typeof(ImportedAttribute))
+                !.GetTypes()
+                .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: false }
+                            && t.GetCustomAttribute<ImportedAttribute>() != null).ToArray();
+            
+            IEnumerable<Type> importerBaseTypes = Assembly.GetAssembly(typeof(ImporterAttribute))
+                !.GetTypes()
+                .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: true }
+                            && t.BaseType.GetGenericTypeDefinition() == typeof(FileImporterBase<>)
+                            && t.GetCustomAttribute<ImporterAttribute>() != null).ToArray();
+
+            foreach (Type domainType in domainTypes)
+            {
+                foreach (Type importerBaseType in importerBaseTypes)
+                {
+                    Type closedType = importerBaseType.MakeGenericType(domainType);
+                    services.AddScoped(closedType);
+                }
+            }
+            
+            services.AddScoped<IImportService>(sp =>
+            {
+                List<object> importers = [];
+                foreach (Type domainType in domainTypes)
+                {
+                    foreach (Type importerBaseType in importerBaseTypes)
+                    {
+                        Type closedType = importerBaseType.MakeGenericType(domainType);
+                        importers.Add(sp.GetRequiredService(closedType));
+                    }
+                }
+                return new ImportService(importers);
+            });
 
             // Application
             services.AddScoped<IBankAccountService, BankAccountService>();
@@ -56,9 +94,11 @@ namespace ConsoleApp
             services.AddSingleton<AccountMenuHandler>();
             services.AddSingleton<CategoryMenuHandler>();
             services.AddSingleton<OperationMenuHandler>();
+            services.AddSingleton<ImportMenuHandler>();
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<AccountMenuHandler>());
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<CategoryMenuHandler>());
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<OperationMenuHandler>());
+            services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<ImportMenuHandler>());
             services.AddSingleton<ConsoleApp>();
 
             ServiceProvider provider = services.BuildServiceProvider();

@@ -40,7 +40,7 @@ namespace ConsoleApp.Menus
             decimal amount = InputHelper.ReadDecimal("Сумма: ");
             string description = InputHelper.ReadString("Описание (необязательно): ");
             Result<Operation> result = await service.AddOperationAsync(type, accountId, categoryId, amount, DateTime.Now, description);
-            Console.WriteLine(result.Success ? "Операция добавлена" : $"{result.Message}");
+            Console.WriteLine(result.IsSuccess ? "Операция добавлена" : $"{result.Message}");
         }
 
         private async Task UpdateDescriptionAsync()
@@ -48,14 +48,14 @@ namespace ConsoleApp.Menus
             Guid id = InputHelper.ReadGuid("Введите ID операции: ");
             string description = InputHelper.ReadString("Новое описание: ");
             Result<Operation> result = await service.UpdateDescriptionAsync(id, description);
-            Console.WriteLine(result.Success ? "Обновлено" : $"{result.Message}");
+            Console.WriteLine(result.IsSuccess ? "Обновлено" : $"{result.Message}");
         }
 
         private async Task DeleteAsync()
         {
             Guid id = InputHelper.ReadGuid("Введите ID операции: ");
             Result result = await service.DeleteOperationAsync(id);
-            Console.WriteLine(result.Success ? "Удалено" : $"{result.Message}");
+            Console.WriteLine(result.IsSuccess ? "Удалено" : $"{result.Message}");
         }
 
         private async Task ShowAllAsync()

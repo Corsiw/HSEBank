@@ -45,7 +45,7 @@ namespace ConsoleApp.Menus
             MoneyType type = InputHelper.ReadEnum<MoneyType>("Тип (0 - Доход, 1 - Расход): ");
             string name = InputHelper.ReadString("Название: ");
             Result<Category> create = await service.CreateCategoryAsync(type, name);
-            Console.WriteLine(create.Success ? $"{create.Value!.Name} создана." : $"{create.Message}");
+            Console.WriteLine(create.IsSuccess ? $"{create.Value!.Name} создана." : $"{create.Message}");
         }
 
         private async Task RenameAsync()
@@ -54,7 +54,7 @@ namespace ConsoleApp.Menus
             Guid id = InputHelper.ReadGuid("Введите ID категории: ");
             string name = InputHelper.ReadString("Новое имя: ");
             Result<Category> result = await service.UpdateNameAsync(id, name);
-            Console.WriteLine(result.Success ? "Обновлено" : $"{result.Message}");
+            Console.WriteLine(result.IsSuccess ? "Обновлено" : $"{result.Message}");
         }
 
         private async Task DeleteAsync()
@@ -62,7 +62,7 @@ namespace ConsoleApp.Menus
             await ShowAllAsync();
             Guid id = InputHelper.ReadGuid("Введите ID категории: ");
             Result result = await service.DeleteCategoryAsync(id);
-            Console.WriteLine(result.Success ? "Удалено" : $"{result.Message}");
+            Console.WriteLine(result.IsSuccess ? "Удалено" : $"{result.Message}");
         }
 
         private async Task ShowAllAsync()

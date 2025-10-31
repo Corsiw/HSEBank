@@ -10,6 +10,15 @@ namespace Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
+        public Task AddRangeAsync(IEnumerable<T> items)
+        {
+            foreach (T item in items)
+            {
+                _items[idSelector(item)] = item;
+            }
+            return Task.CompletedTask;
+        }
+
         public Task UpdateAsync(T item)
         {
             _items[idSelector(item)] = item;

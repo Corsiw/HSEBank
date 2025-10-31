@@ -48,7 +48,7 @@ namespace ConsoleApp.Menus
             string name = InputHelper.ReadString("Название счета: ");
             decimal balance = InputHelper.ReadDecimal("Начальный баланс: ");
             Result<BankAccount> create = await service.CreateAccountAsync(name, balance);
-            Console.WriteLine(create.Success ? $"{create.Value!.Name} создан." : $"{create.Message}");
+            Console.WriteLine(create.IsSuccess ? $"{create.Value!.Name} создан." : $"{create.Message}");
         }
 
         private async Task RenameAsync()
@@ -57,7 +57,7 @@ namespace ConsoleApp.Menus
             Guid id = InputHelper.ReadGuid("Введите ID счета: ");
             string newName = InputHelper.ReadString("Новое имя: ");
             Result<BankAccount> result = await service.UpdateNameAsync(id, newName);
-            Console.WriteLine(result.Success ? "✅ Обновлено" : $"{result.Message}");
+            Console.WriteLine(result.IsSuccess ? "Обновлено" : $"{result.Message}");
         }
 
         private async Task UpdateBalanceAsync()
@@ -66,7 +66,7 @@ namespace ConsoleApp.Menus
             Guid id = InputHelper.ReadGuid("Введите ID счета: ");
             decimal newBalance = InputHelper.ReadDecimal("Новый баланс: ");
             Result<BankAccount> result = await service.UpdateBalanceAsync(id, newBalance);
-            Console.WriteLine(result.Success ? "Баланс обновлен" : $"{result.Message}");
+            Console.WriteLine(result.IsSuccess ? "Баланс обновлен" : $"{result.Message}");
         }
 
         private async Task DeleteAsync()
@@ -74,7 +74,7 @@ namespace ConsoleApp.Menus
             await ShowAllAsync();
             Guid id = InputHelper.ReadGuid("Введите ID счета: ");
             Result result = await service.DeleteAccountAsync(id);
-            Console.WriteLine(result.Success ? "Удалено" : $"{result.Message}");
+            Console.WriteLine(result.IsSuccess ? "Удалено" : $"{result.Message}");
         }
 
         private async Task ShowAllAsync()

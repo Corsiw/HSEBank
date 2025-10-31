@@ -1,4 +1,4 @@
-namespace Infrastructure.ImportExport
+namespace Infrastructure.Export
 {
     public class JsonExportVisitor
     {

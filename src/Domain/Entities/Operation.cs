@@ -1,7 +1,9 @@
+using Domain.Attributes;
 using Domain.Enums;
 
 namespace Domain.Entities
 {
+    [Imported]
     public class Operation
     {
         public Guid Id { get; private set; }

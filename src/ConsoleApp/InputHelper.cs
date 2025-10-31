@@ -8,6 +8,12 @@ namespace ConsoleApp
             return Console.ReadLine() ?? "";
         }
 
+        public static int ReadInt(string prompt)
+        {
+            Console.Write(prompt);
+            return int.TryParse(Console.ReadLine(), out int value) ? value : 0;
+        }
+
         public static decimal ReadDecimal(string prompt)
         {
             Console.Write(prompt);
