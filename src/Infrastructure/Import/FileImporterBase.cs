@@ -4,8 +4,6 @@ namespace Infrastructure.Import
 {
     public abstract class FileImporterBase<T>(IRepository<T> repository) : IFileImporter<T> where T : class
     {
-        protected string Name = typeof(FileImporterBase<T>).Name;
-
         public async Task ImportAsync(string filePath)
         {
             string content = await File.ReadAllTextAsync(filePath);

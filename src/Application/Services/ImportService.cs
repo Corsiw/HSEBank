@@ -59,6 +59,10 @@ namespace Application.Services
             {
                 return Result.Fail($"Ошибка импорта: {ex.Message}");
             }
+            catch (RepositoryException ex)
+            {
+                return Result.Fail($"Ошибка репозитория: {ex.Message}");
+            }
         }
     }
 }

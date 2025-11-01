@@ -36,12 +36,12 @@ namespace Infrastructure.Import
                         d.Amount, d.Date, d.Description, d.Id) as T)!;
                 }
             }
-            catch (Exception e) when (e is FileNotFoundException or JsonException or FormatException or InvalidDataException)
+            catch (Exception ex) when (ex is FileNotFoundException or JsonException or FormatException or InvalidDataException)
             {
-                throw new ImportException($"Ошибка формата Json: {e.Message}");
+                throw new ImportException($"Ошибка формата Json: {ex.Message}", ex);
             }
 
-            throw new NotSupportedException($"Type {typeof(T).Name} is not supported for JSON import.");
+            throw new ImportException($"Type {typeof(T).Name} is not supported for JSON import.");
         }
     }
 }

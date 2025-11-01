@@ -32,22 +32,25 @@ namespace ConsoleApp
             services.AddScoped<IRepository<BankAccount>>(sp =>
             {
                 FinanceDbContext dbContext = sp.GetRequiredService<FinanceDbContext>();
-                EfRepository<BankAccount> efRepo = new EfRepository<BankAccount>(dbContext);
-                return new CachedRepositoryProxy<BankAccount>(efRepo, b => b.Id);
+                EfRepository<BankAccount> efRepo = new(dbContext);
+                CachedRepositoryProxy<BankAccount> cachedRepo =  new(efRepo, b => b.Id);
+                return new SafeRepositoryDecorator<BankAccount>(cachedRepo);
             });
 
             services.AddScoped<IRepository<Category>>(sp =>
             {
                 FinanceDbContext dbContext = sp.GetRequiredService<FinanceDbContext>();
                 EfRepository<Category> efRepo = new EfRepository<Category>(dbContext);
-                return new CachedRepositoryProxy<Category>(efRepo, c => c.Id);
+                CachedRepositoryProxy<Category> cachedRepo =  new(efRepo, b => b.Id);
+                return new SafeRepositoryDecorator<Category>(cachedRepo);
             });
 
             services.AddScoped<IRepository<Operation>>(sp =>
             {
                 FinanceDbContext dbContext = sp.GetRequiredService<FinanceDbContext>();
                 EfRepository<Operation> efRepo = new EfRepository<Operation>(dbContext);
-                return new CachedRepositoryProxy<Operation>(efRepo, o => o.Id);
+                CachedRepositoryProxy<Operation> cachedRepo =  new(efRepo, b => b.Id);
+                return new SafeRepositoryDecorator<Operation>(cachedRepo);
             });
             
             // Importers
