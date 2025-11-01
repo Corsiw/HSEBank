@@ -1,10 +1,12 @@
 using Domain.Attributes;
+using Domain.Common;
 using Domain.Enums;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
     [Imported]
-    public class Operation
+    public class Operation :  IVisitable
     {
         public Guid Id { get; private set; }
         public MoneyType Type { get; private set; }
@@ -37,6 +39,11 @@ namespace Domain.Entities
         public void UpdateDescription(string description)
         {
             Description = description;
+        }
+        
+        public void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

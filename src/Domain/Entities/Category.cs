@@ -1,11 +1,13 @@
 using Domain.Attributes;
+using Domain.Common;
 using Domain.Enums;
+using Domain.Interfaces;
 using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
     [Imported]
-    public class Category
+    public class Category :  IVisitable
     {
         public Guid Id { get; private set; }
         public MoneyType Type { get; private set; }
@@ -35,6 +37,11 @@ namespace Domain.Entities
             }
 
             Name = newName;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

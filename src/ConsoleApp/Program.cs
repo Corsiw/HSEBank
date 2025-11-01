@@ -4,7 +4,9 @@ using ConsoleApp.Menus;
 using Domain.Attributes;
 using Domain.Entities;
 using Domain.Factories;
+using Domain.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Export;
 using Infrastructure.Import;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,8 +56,9 @@ namespace ConsoleApp
             });
             
             // Importers
-            IEnumerable<Type> domainTypes = Assembly.GetAssembly(typeof(ImportedAttribute))
-                !.GetTypes()
+            Assembly domainAssembly = typeof(BankAccount).Assembly;
+            IEnumerable<Type> domainTypes = domainAssembly
+                .GetTypes()
                 .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: false }
                             && t.GetCustomAttribute<ImportedAttribute>() != null).ToArray();
             
@@ -87,6 +90,35 @@ namespace ConsoleApp
                 }
                 return new ImportService(importers);
             });
+            
+            // Exporters
+            services.AddScoped<IRepository<IVisitable>>(sp =>
+                new RepositoryAdapter<BankAccount>(sp.GetRequiredService<IRepository<BankAccount>>()));
+            
+            services.AddScoped<IRepository<IVisitable>>(sp =>
+                new RepositoryAdapter<Category>(sp.GetRequiredService<IRepository<Category>>()));
+            
+            services.AddScoped<IRepository<IVisitable>>(sp =>
+                new RepositoryAdapter<Operation>(sp.GetRequiredService<IRepository<Operation>>()));
+            
+            services.AddScoped<IFileExporter, JsonFileVisitor>();
+            services.AddScoped<IFileExporter, CsvFileVisitor>();
+            
+            services.AddScoped<IEnumerable<ExporterDescriptor>>(provider =>
+            {
+                List<IFileExporter> exporters = provider.GetServices<IFileExporter>().ToList();
+
+                CsvFileVisitor csv = exporters.OfType<CsvFileVisitor>().First();
+                JsonFileVisitor json = exporters.OfType<JsonFileVisitor>().First();
+
+                return new List<ExporterDescriptor>
+                {
+                    new(csv, [typeof(BankAccount), typeof(Operation), typeof(Category)]),
+                    new(json, [typeof(BankAccount), typeof(Operation), typeof(Category)])
+                };
+            });
+            
+            services.AddScoped<IExportService, ExportService>();
 
             // Application
             services.AddScoped<IBankAccountService, BankAccountService>();
@@ -98,10 +130,12 @@ namespace ConsoleApp
             services.AddSingleton<CategoryMenuHandler>();
             services.AddSingleton<OperationMenuHandler>();
             services.AddSingleton<ImportMenuHandler>();
+            services.AddSingleton<ExportMenuHandler>();
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<AccountMenuHandler>());
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<CategoryMenuHandler>());
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<OperationMenuHandler>());
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<ImportMenuHandler>());
+            services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<ExportMenuHandler>());
             services.AddSingleton<ConsoleApp>();
 
             ServiceProvider provider = services.BuildServiceProvider();

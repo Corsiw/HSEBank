@@ -1,10 +1,12 @@
 using Domain.Attributes;
+using Domain.Common;
+using Domain.Interfaces;
 using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
     [Imported]
-    public class BankAccount
+    public class BankAccount : IVisitable
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; }
@@ -49,6 +51,11 @@ namespace Domain.Entities
             }
 
             Balance = newBalance;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }
