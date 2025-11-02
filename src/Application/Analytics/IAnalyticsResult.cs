@@ -1,6 +1,4 @@
-using Domain.Interfaces;
-
-namespace Domain.Analytics
+namespace Application.Analytics
 {
     public interface IAnalyticsResult
     {

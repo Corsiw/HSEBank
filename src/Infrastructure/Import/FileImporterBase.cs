@@ -1,5 +1,5 @@
+using Application.Import;
 using Application.Interfaces;
-using Application.Profiles;
 using Domain.Exceptions;
 
 namespace Infrastructure.Import

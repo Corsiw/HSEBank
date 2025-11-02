@@ -1,6 +1,4 @@
-using Domain.Analytics;
-
-namespace Application.Strategies
+namespace Application.Analytics.Strategies
 {
     public interface IAnalyticsStrategy
     {

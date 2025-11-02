@@ -1,5 +1,4 @@
-using Domain.Analytics;
-using Domain.Common;
+using Application.Analytics;
 
 namespace Application.Interfaces
 {

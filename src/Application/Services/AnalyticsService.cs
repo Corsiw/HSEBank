@@ -1,6 +1,6 @@
+using Application.Analytics;
+using Application.Analytics.Strategies;
 using Application.Interfaces;
-using Application.Strategies;
-using Domain.Analytics;
 
 namespace Application.Services
 {

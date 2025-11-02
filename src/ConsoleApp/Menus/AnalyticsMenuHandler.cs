@@ -1,7 +1,5 @@
+using Application.Analytics;
 using Application.Interfaces;
-using Domain.Analytics;
-using Domain.Common;
-using Domain.Interfaces;
 
 namespace ConsoleApp.Menus
 {

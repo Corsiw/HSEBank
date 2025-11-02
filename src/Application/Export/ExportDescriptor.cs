@@ -1,6 +1,6 @@
 using Application.Interfaces;
 
-namespace Application.Descriptors
+namespace Application.Export
 {
     public class ExporterDescriptor(IFileExporter exporter, IEnumerable<Type> supportedTypes)
     {

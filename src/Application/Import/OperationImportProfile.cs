@@ -2,7 +2,7 @@ using Domain.Common;
 using Domain.Entities;
 using Domain.Factories;
 
-namespace Application.Profiles
+namespace Application.Import
 {
     public class OperationImportProfile(IDomainFactory factory) : IImportProfile<Operation, OperationDto>
     {

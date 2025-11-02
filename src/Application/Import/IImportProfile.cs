@@ -1,4 +1,4 @@
-namespace Application.Profiles
+namespace Application.Import
 {
     public interface IImportProfile<TDomain, TDto>
     {

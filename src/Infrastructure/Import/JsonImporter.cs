@@ -1,5 +1,5 @@
+using Application.Import;
 using Application.Interfaces;
-using Application.Profiles;
 using System.Text.Json;
 
 namespace Infrastructure.Import

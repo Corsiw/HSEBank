@@ -2,7 +2,7 @@ using Domain.Common;
 using Domain.Entities;
 using Domain.Factories;
 
-namespace Application.Profiles
+namespace Application.Import
 {
     public class BankAccountImportProfile(IDomainFactory factory) : IImportProfile<BankAccount, BankAccountDto>
     {

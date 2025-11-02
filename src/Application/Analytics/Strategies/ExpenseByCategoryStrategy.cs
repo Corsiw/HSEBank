@@ -1,8 +1,8 @@
 using Application.Interfaces;
-using Domain.Analytics;
+using Domain.Common;
 using Domain.Entities;
 
-namespace Application.Strategies
+namespace Application.Analytics.Strategies
 {
     public class ExpenseByCategoryStrategy(IRepository<Operation> operationRepo) : IAnalyticsStrategy
     {
