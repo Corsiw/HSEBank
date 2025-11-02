@@ -1,9 +1,8 @@
-using Domain.Common;
-
 namespace Infrastructure.Import
 {
     public interface IFileImporter
     {
+        string FileExtension { get; }
         Task ImportAsync(string filePath);
     }
 

@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Services;
 using ConsoleApp.Menus;
-using Domain.Attributes;
 using Domain.Entities;
 using Domain.Factories;
 using Domain.Interfaces;
@@ -11,7 +10,6 @@ using Infrastructure.Import;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace ConsoleApp
 {
@@ -56,38 +54,15 @@ namespace ConsoleApp
             });
             
             // Importers
-            Assembly domainAssembly = typeof(BankAccount).Assembly;
-            IEnumerable<Type> domainTypes = domainAssembly
-                .GetTypes()
-                .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: false }
-                            && t.GetCustomAttribute<ImportedAttribute>() != null).ToArray();
-            
-            IEnumerable<Type> importerBaseTypes = Assembly.GetAssembly(typeof(ImporterAttribute))
-                !.GetTypes()
-                .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: true }
-                            && t.BaseType.GetGenericTypeDefinition() == typeof(FileImporterBase<>)
-                            && t.GetCustomAttribute<ImporterAttribute>() != null).ToArray();
-
-            foreach (Type domainType in domainTypes)
+            services.AddScoped<IFileImporter, CsvImporter<BankAccount>>();
+            services.AddScoped<IFileImporter, CsvImporter<Category>>();
+            services.AddScoped<IFileImporter, CsvImporter<Operation>>();
+            services.AddScoped<IFileImporter, JsonImporter<BankAccount>>();
+            services.AddScoped<IFileImporter, JsonImporter<Category>>();
+            services.AddScoped<IFileImporter, JsonImporter<Operation>>();
+            services.AddScoped<IImportService, ImportService>(p =>
             {
-                foreach (Type importerBaseType in importerBaseTypes)
-                {
-                    Type closedType = importerBaseType.MakeGenericType(domainType);
-                    services.AddScoped(closedType);
-                }
-            }
-            
-            services.AddScoped<IImportService>(sp =>
-            {
-                List<object> importers = [];
-                foreach (Type domainType in domainTypes)
-                {
-                    foreach (Type importerBaseType in importerBaseTypes)
-                    {
-                        Type closedType = importerBaseType.MakeGenericType(domainType);
-                        importers.Add(sp.GetRequiredService(closedType));
-                    }
-                }
+                List<IFileImporter> importers = p.GetServices<IFileImporter>().ToList();
                 return new ImportService(importers);
             });
             

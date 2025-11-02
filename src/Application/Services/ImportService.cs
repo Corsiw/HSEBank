@@ -2,31 +2,20 @@ using Application.Interfaces;
 using Domain.Common;
 using Domain.Exceptions;
 using Infrastructure.Import;
-using System.Reflection;
 
 namespace Application.Services
 {
-    public class ImportService : IImportService
+    public class ImportService(IEnumerable<IFileImporter> importers) : IImportService
     {
-        private readonly Dictionary<(string type, string extension), IFileImporter> _importers = new();
-
-        public ImportService(IEnumerable<object> importers)
-        {
-            foreach (IFileImporter importer in importers)
-            {
-                if (importer.GetType().GetCustomAttribute<ImporterAttribute>() is not { } attr)
-                {
-                    continue;
-                }
-
-                string type = importer.GetType().GenericTypeArguments[0].Name;
-                _importers[(type, attr.FileExtension)] = importer;
-            }
-        }
+        private readonly IReadOnlyCollection<IFileImporter> _importers = importers.ToList().AsReadOnly();
 
         public IReadOnlyCollection<(string type, string extension)> GetTypeExtensionOptions()
         {
-            return _importers.Keys;
+            return _importers
+                .Select(t => (t.GetType().GenericTypeArguments[0].Name, t.FileExtension))
+                .Distinct()
+                .ToList()
+                .AsReadOnly();
         }
 
         public async Task<Result> ImportFileByTypeAsync(string filePath, string typeName)
@@ -37,22 +26,20 @@ namespace Application.Services
                 return Result.Fail($"Файл {filePath} не найден.");
             }
             
-            string domainType = _importers.Keys.FirstOrDefault(k => k.type == typeName).type;
-            if (domainType == null)
-            {
-                return Result.Fail($"Тип {typeName} не найден.");
-            }
-            
             string ext = Path.GetExtension(filePath).ToLower();
 
-            if (!_importers.TryGetValue((domainType, ext), out IFileImporter? importer))
+            IFileImporter? descriptor = _importers.FirstOrDefault(i =>
+                (i.GetType().GenericTypeArguments[0].Name == typeName) &&
+                i.FileExtension == ext);
+
+            if (descriptor == null)
             {
-                return Result.Fail($"Импортер для {domainType} с расширением {ext} не найден.");
+                return Result.Fail($"Импортер для {typeName} и расширения {ext} не найден.");
             }
 
             try
             {
-                await importer.ImportAsync(filePath);
+                await descriptor.ImportAsync(filePath);
                 return Result.Ok();
             }
             catch (ImportException ex)
