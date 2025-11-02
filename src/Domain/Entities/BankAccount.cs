@@ -1,9 +1,7 @@
-using Domain.Attributes;
 using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    [Imported]
     public class BankAccount : IVisitable
     {
         public Guid Id { get; private set; }

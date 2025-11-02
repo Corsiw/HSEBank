@@ -2,8 +2,8 @@ namespace Domain.Common
 {
     public class Result
     {
-        public bool IsSuccess { get; init; }
-        public string? Message { get; init; }
+        public bool IsSuccess { get; protected init; }
+        public string? Message { get; protected init; }
 
         public static Result Ok()
         {
@@ -18,7 +18,7 @@ namespace Domain.Common
 
     public class Result<T> : Result
     {
-        public T? Value { get; init; }
+        public T? Value { get; private init; }
 
         public static Result<T> Ok(T value)
         {

@@ -1,10 +1,8 @@
-using Domain.Attributes;
 using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    [Imported]
     public class Operation :  IVisitable
     {
         public Guid Id { get; private set; }

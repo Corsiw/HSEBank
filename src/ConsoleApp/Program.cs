@@ -2,11 +2,13 @@
 using Application.Interfaces;
 using Application.Profiles;
 using Application.Services;
+using Application.Strategies;
 using ConsoleApp.Menus;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Factories;
 using Domain.Interfaces;
+using Infrastructure.Analytics;
 using Infrastructure.Data;
 using Infrastructure.Export;
 using Infrastructure.Import;
@@ -104,6 +106,11 @@ namespace ConsoleApp
             });
             
             services.AddScoped<IExportService, ExportService>();
+            
+            // Analytics
+            services.AddScoped<IAnalyticsStrategy, ExpenseByCategoryStrategy>();
+            services.AddScoped<IAnalyticsStrategy, BalanceDynamicsStrategy>();
+            services.AddScoped<IAnalyticsService, AnalyticsService>();
 
             // Application
             services.AddScoped<IBankAccountService, BankAccountService>();
@@ -116,11 +123,14 @@ namespace ConsoleApp
             services.AddSingleton<OperationMenuHandler>();
             services.AddSingleton<ImportMenuHandler>();
             services.AddSingleton<ExportMenuHandler>();
+            services.AddSingleton<AnalyticsMenuHandler>();
+            services.AddSingleton<IAnalyticsResultVisitor, ConsoleAnalyticsResultVisitor>();
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<AccountMenuHandler>());
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<CategoryMenuHandler>());
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<OperationMenuHandler>());
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<ImportMenuHandler>());
             services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<ExportMenuHandler>());
+            services.AddSingleton<IMenuHandler>(sp => sp.GetRequiredService<AnalyticsMenuHandler>());
             services.AddSingleton<ConsoleApp>();
 
             ServiceProvider provider = services.BuildServiceProvider();
