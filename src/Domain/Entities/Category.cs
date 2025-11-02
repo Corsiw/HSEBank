@@ -1,8 +1,6 @@
 using Domain.Attributes;
-using Domain.Common;
 using Domain.Enums;
 using Domain.Interfaces;
-using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
