@@ -1,3 +1,5 @@
+using Application.Interfaces;
+
 namespace Infrastructure.Repositories
 {
     public class CachedRepositoryProxy<T>(IRepository<T> inner, Func<T, Guid> idSelector) : IRepository<T>

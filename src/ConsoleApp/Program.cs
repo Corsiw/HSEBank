@@ -1,6 +1,9 @@
-﻿using Application.Interfaces;
+﻿using Application.Descriptors;
+using Application.Interfaces;
+using Application.Profiles;
 using Application.Services;
 using ConsoleApp.Menus;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Factories;
 using Domain.Interfaces;
@@ -54,12 +57,19 @@ namespace ConsoleApp
             });
             
             // Importers
-            services.AddScoped<IFileImporter, CsvImporter<BankAccount>>();
-            services.AddScoped<IFileImporter, CsvImporter<Category>>();
-            services.AddScoped<IFileImporter, CsvImporter<Operation>>();
-            services.AddScoped<IFileImporter, JsonImporter<BankAccount>>();
-            services.AddScoped<IFileImporter, JsonImporter<Category>>();
-            services.AddScoped<IFileImporter, JsonImporter<Operation>>();
+            services.AddScoped<IImportProfile<BankAccount, BankAccountDto>, BankAccountImportProfile>();
+            services.AddScoped<IImportProfile<Category, CategoryDto>, CategoryImportProfile>();
+            services.AddScoped<IImportProfile<Operation, OperationDto>, OperationImportProfile>();
+
+            // CSV
+            services.AddScoped<IFileImporter, CsvImporter<BankAccount, BankAccountDto>>();
+            services.AddScoped<IFileImporter, CsvImporter<Category, CategoryDto>>();
+            services.AddScoped<IFileImporter, CsvImporter<Operation, OperationDto>>();
+
+            // JSON
+            services.AddScoped<IFileImporter, JsonImporter<BankAccount, BankAccountDto>>();
+            services.AddScoped<IFileImporter, JsonImporter<Category, CategoryDto>>();
+            services.AddScoped<IFileImporter, JsonImporter<Operation, OperationDto>>();
             services.AddScoped<IImportService, ImportService>(p =>
             {
                 List<IFileImporter> importers = p.GetServices<IFileImporter>().ToList();

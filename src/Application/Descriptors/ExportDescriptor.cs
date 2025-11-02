@@ -1,4 +1,6 @@
-namespace Infrastructure.Export
+using Application.Interfaces;
+
+namespace Application.Descriptors
 {
     public class ExporterDescriptor(IFileExporter exporter, IEnumerable<Type> supportedTypes)
     {

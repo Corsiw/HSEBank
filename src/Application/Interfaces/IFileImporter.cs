@@ -1,4 +1,4 @@
-namespace Infrastructure.Import
+namespace Application.Interfaces
 {
     public interface IFileImporter
     {

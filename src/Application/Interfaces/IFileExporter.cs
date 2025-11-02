@@ -1,6 +1,6 @@
 using Domain.Interfaces;
 
-namespace Infrastructure.Export
+namespace Application.Interfaces
 {
     public interface IFileExporter
     {

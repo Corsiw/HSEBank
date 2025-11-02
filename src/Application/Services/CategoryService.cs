@@ -3,7 +3,6 @@ using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Factories;
-using Infrastructure.Repositories;
 
 namespace Application.Services
 {

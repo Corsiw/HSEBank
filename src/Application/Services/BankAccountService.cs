@@ -2,7 +2,6 @@ using Application.Interfaces;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Factories;
-using Infrastructure.Repositories;
 
 namespace Application.Services
 {

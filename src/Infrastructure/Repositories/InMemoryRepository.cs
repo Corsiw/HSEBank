@@ -1,3 +1,5 @@
+using Application.Interfaces;
+
 namespace Infrastructure.Repositories
 {
     public class InMemoryRepository<T>(Func<T, Guid> idSelector) : IRepository<T> where T : class

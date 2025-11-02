@@ -1,26 +1,34 @@
-using Infrastructure.Repositories;
+using Application.Interfaces;
+using Application.Profiles;
+using Domain.Exceptions;
 
 namespace Infrastructure.Import
 {
-    public abstract class FileImporterBase<T>(IRepository<T> repository) : IFileImporter<T> where T : class
+    public abstract class FileImporterBase<TDomain, TDto>(
+        IRepository<TDomain> repository,
+        IImportProfile<TDomain, TDto> profile)
+        : IFileImporter
+        where TDomain : class
     {
+        protected readonly IRepository<TDomain> Repository = repository;
+        protected readonly IImportProfile<TDomain, TDto> Profile = profile;
+
         public abstract string FileExtension { get; }
 
-        public async Task ImportAsync(string filePath)
+        public async Task ImportAsync(string content)
         {
-            string content = await File.ReadAllTextAsync(filePath);
-            IEnumerable<T> entities = Parse(content);
-            await SaveAsync(entities);
-        }
-
-        protected abstract IEnumerable<T> Parse(string content);
-
-        protected virtual async Task SaveAsync(IEnumerable<T> items)
-        {
-            foreach (T item in items)
+            try
             {
-                await repository.UpsertAsync(item);
+                IEnumerable<TDto> dtos = Parse(content);
+                IEnumerable<TDomain> entities = Profile.Map(dtos);
+                await Repository.AddRangeAsync(entities);
+            }
+            catch (Exception ex)
+            {
+                throw new ImportException($"Ошибка импорта ({FileExtension}): {ex.Message}", ex);
             }
         }
+
+        protected abstract IEnumerable<TDto> Parse(string content);
     }
 }

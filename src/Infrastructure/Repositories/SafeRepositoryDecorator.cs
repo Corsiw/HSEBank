@@ -1,3 +1,4 @@
+using Application.Interfaces;
 using Domain.Exceptions;
 
 namespace Infrastructure.Repositories
