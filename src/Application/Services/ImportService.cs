@@ -27,18 +27,18 @@ namespace Application.Services
             
             string ext = Path.GetExtension(filePath).ToLower();
 
-            IFileImporter? descriptor = _importers.FirstOrDefault(i =>
+            IFileImporter? importer = _importers.FirstOrDefault(i =>
                 (i.GetType().GenericTypeArguments[0].Name == typeName) &&
                 i.FileExtension == ext);
 
-            if (descriptor == null)
+            if (importer == null)
             {
                 return Result.Fail($"Импортер для {typeName} и расширения {ext} не найден.");
             }
 
             try
             {
-                await descriptor.ImportAsync(filePath);
+                await importer.ImportAsync(filePath);
                 return Result.Ok();
             }
             catch (ImportException ex)

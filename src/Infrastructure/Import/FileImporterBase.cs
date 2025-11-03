@@ -15,13 +15,14 @@ namespace Infrastructure.Import
 
         public abstract string FileExtension { get; }
 
-        public async Task ImportAsync(string content)
+        public async Task ImportAsync(string filePath)
         {
             try
             {
+                string content = await File.ReadAllTextAsync(filePath);
                 IEnumerable<TDto> dtos = Parse(content);
                 IEnumerable<TDomain> entities = Profile.Map(dtos);
-                await Repository.AddRangeAsync(entities);
+                await SaveAsync(entities);
             }
             catch (Exception ex)
             {
@@ -30,5 +31,14 @@ namespace Infrastructure.Import
         }
 
         protected abstract IEnumerable<TDto> Parse(string content);
+
+        protected virtual async Task SaveAsync(IEnumerable<TDomain> range)
+        {
+            // Апдейтим, если совпал ключ
+            foreach (TDomain item in range)
+            {
+                await Repository.UpsertAsync(item);
+            }
+        }
     }
 }

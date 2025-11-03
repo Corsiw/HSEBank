@@ -57,3 +57,8 @@ nunit-*.xml
 .idea/
 .editorconfig
 HseBank.sln.DotSettings.user
+
+# SQLiteBD
+finance.db
+finance.db-shm
+finance.db-wal
