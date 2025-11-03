@@ -4,7 +4,7 @@ namespace Application.Interfaces
 {
     public interface IImportService
     {
-        Task<Result> ImportFileByTypeAsync(string filePath, string type);
-        IReadOnlyCollection<(string type, string extension)> GetTypeExtensionOptions();
+        Task<Result> ImportFileByTypeAsync(string filePath, Type type);
+        IReadOnlyCollection<(Type type, string extension)> GetTypeExtensionOptions();
     }
 }

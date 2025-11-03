@@ -11,16 +11,24 @@ namespace ConsoleApp.Menus
         {
             while (true)
             {
-                List<string> types = importService.GetTypeExtensionOptions().Select(s => s.type).Distinct().ToList();
-                List<string> extensions = importService.GetTypeExtensionOptions().Select(s => s.extension).Distinct().ToList();
+                List<Type> types = importService.GetTypeExtensionOptions()
+                    .Select(s => s.type)
+                    .Distinct()
+                    .ToList();
+                types.Sort((t1, t2)  => string.Compare(t1.Name, t2.Name, StringComparison.Ordinal));
 
+                List<string> extensions = importService.GetTypeExtensionOptions()
+                    .Select(s => s.extension)
+                    .Distinct()
+                    .ToList();
+                
                 Console.WriteLine($"{Environment.NewLine}=== Импорт данных ===");
                 Console.WriteLine("Доступные типы данных:");
 
                 int i = 1;
-                foreach (string type in types)
+                foreach (Type type in types)
                 {
-                    Console.WriteLine($"{i++}. {type}");
+                    Console.WriteLine($"{i++}. {type.Name}");
                 }
 
                 Console.WriteLine($"{types.Count + 1}. Выйти");
@@ -37,7 +45,7 @@ namespace ConsoleApp.Menus
                     break;
                 }
 
-                string selectedType = types.ElementAt(typeIndex - 1);
+                Type selectedType = types.ElementAt(typeIndex - 1);
 
                 Console.WriteLine($"{Environment.NewLine}Доступные расширения:");
                 i = 1;

@@ -15,6 +15,7 @@ namespace ConsoleApp.Menus
                     .Select(s => s.type)
                     .Distinct()
                     .ToList();
+                types.Sort((t1, t2)  => string.Compare(t1.Name, t2.Name, StringComparison.Ordinal));
 
                 List<string> extensions = exportService.GetTypeExtensionOptions()
                     .Select(s => s.extension)

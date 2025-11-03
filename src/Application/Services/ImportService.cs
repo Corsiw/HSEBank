@@ -8,16 +8,16 @@ namespace Application.Services
     {
         private readonly IReadOnlyCollection<IFileImporter> _importers = importers.ToList().AsReadOnly();
 
-        public IReadOnlyCollection<(string type, string extension)> GetTypeExtensionOptions()
+        public IReadOnlyCollection<(Type type, string extension)> GetTypeExtensionOptions()
         {
             return _importers
-                .Select(t => (t.GetType().GenericTypeArguments[0].Name, t.FileExtension))
+                .Select(t => (t.GetType().GenericTypeArguments[0], t.FileExtension))
                 .Distinct()
                 .ToList()
                 .AsReadOnly();
         }
 
-        public async Task<Result> ImportFileByTypeAsync(string filePath, string typeName)
+        public async Task<Result> ImportFileByTypeAsync(string filePath, Type type)
         {
             filePath = filePath.Trim();
             if (!File.Exists(filePath))
@@ -28,12 +28,12 @@ namespace Application.Services
             string ext = Path.GetExtension(filePath).ToLower();
 
             IFileImporter? importer = _importers.FirstOrDefault(i =>
-                (i.GetType().GenericTypeArguments[0].Name == typeName) &&
+                (i.GetType().GenericTypeArguments[0] == type) &&
                 i.FileExtension == ext);
 
             if (importer == null)
             {
-                return Result.Fail($"Импортер для {typeName} и расширения {ext} не найден.");
+                return Result.Fail($"Импортер для {type} и расширения {ext} не найден.");
             }
 
             try
