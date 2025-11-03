@@ -27,7 +27,7 @@ namespace Application.Services
             try
             {
                 IRepository<IVisitable>? repo = repos.FirstOrDefault(r =>
-                    r.ListAsync().Result.FirstOrDefault()?.GetType() == type);
+                    r.GetType().GenericTypeArguments[0] == type);
 
                 if (repo == null)
                 {

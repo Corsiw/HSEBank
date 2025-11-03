@@ -25,11 +25,8 @@ namespace Infrastructure.Import
                 HeaderValidated = null
             };
 
-            using (CsvReader csv = new(reader, config))
-            {
-                List<TDto> records = csv.GetRecords<TDto>().ToList();
-                return records;
-            }
+            using CsvReader csv = new(reader, config);
+            return csv.GetRecords<TDto>().ToList();
         }
     }
 }
