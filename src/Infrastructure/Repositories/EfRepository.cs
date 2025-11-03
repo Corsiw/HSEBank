@@ -45,9 +45,8 @@ namespace Infrastructure.Repositories
             else
             {
                 _context.Entry(existing).CurrentValues.SetValues(item);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
