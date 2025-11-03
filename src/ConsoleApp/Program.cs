@@ -32,8 +32,17 @@ namespace ConsoleApp
             services.AddScoped<IDomainFactory, DomainFactory>();
 
             // Infrastructure
+            string exeDir = AppContext.BaseDirectory;
+
+            string solutionRoot = Path.GetFullPath(Path.Combine(exeDir, "..", "..", "..", "..", ".."));
+            string dataDir = Path.Combine(solutionRoot, "data");
+            Directory.CreateDirectory(dataDir);
+
+            string dbPath = Path.Combine(dataDir, "finance.db");
+            Console.WriteLine(dbPath);
+            
             services.AddDbContext<FinanceDbContext>(options =>
-                options.UseSqlite("Data Source=finance.db"));
+                options.UseSqlite($"Data Source={dbPath}"));
 
             services.AddScoped<IRepository<BankAccount>>(sp =>
             {
