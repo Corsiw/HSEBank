@@ -79,20 +79,35 @@
 
 ### Работа с базой данных
 
-В проекте используется Entity Framework Core и SQLite `finance.db`:
+В проекте используется **Entity Framework Core** и **SQLite**.
+Файл базы данных `finance.db` создаётся **автоматически при первом запуске** приложения.
 
-* при первом запуске она создаётся автоматически в каталоге `ConsoleApp`;
-* для пересоздания базы выполните:
+* База данных хранится по пути:
 
-```bash
-dotnet ef database update --project ./src/Infrastructure/Infrastructure.csproj
-```
+  ```
+  ./data/finance.db
+  ```
 
-> Убедитесь, что в `appsettings.json` или в `Program.cs` строка подключения выглядит так:
+  (папка `data` автоматически создаётся в корне проекта — на уровне `.sln` файла).
+
+* При запуске выполняются **автоматические миграции** — база будет обновлена до последней версии без дополнительных команд.
+
+* Для ручного применения миграций (например, в процессе разработки) можно выполнить:
+
+  ```bash
+  dotnet ef database update --project ./src/Infrastructure/Infrastructure.csproj
+  ```
+
+> Убедитесь, что в `Program.cs` строка подключения задаётся корректно, например:
 >
 > ```csharp
-> options.UseSqlite("Data Source=finance.db");
+> string solutionRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".."));
+> string dataDir = Path.Combine(solutionRoot, "data");
+> Directory.CreateDirectory(dataDir);
+> options.UseSqlite($"Data Source={Path.Combine(dataDir, "finance.db")}");
 > ```
+>
+> Это гарантирует, что база данных будет размещена **в едином месте** при запуске как из IDE (например, Rider), так и из консоли.
 
 ---
 

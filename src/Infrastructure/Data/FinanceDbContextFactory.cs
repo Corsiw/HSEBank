@@ -9,7 +9,7 @@ namespace Infrastructure.Data
         public FinanceDbContext CreateDbContext(string[] args)
         {
             DbContextOptionsBuilder<FinanceDbContext> optionsBuilder = new();
-            optionsBuilder.UseSqlite("Data Source=finance.db");
+            optionsBuilder.UseSqlite(DbPathProvider.GetConnectionString());
 
             return new FinanceDbContext(optionsBuilder.Options);
         }
